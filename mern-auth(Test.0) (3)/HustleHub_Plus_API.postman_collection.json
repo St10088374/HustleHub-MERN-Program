@@ -1,0 +1,758 @@
+{
+  "info": {
+    "name": "HustleHub+ API Tests",
+    "_postman_id": "hustlehub-collection-v2",
+    "description": "Postman collection for HustleHub+ API – Part 2. Covers authentication, gig management, bookings, and transactions.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:5000/api", "type": "string" },
+    { "key": "client_email", "value": "", "type": "string" },
+    { "key": "client_token", "value": "", "type": "string" },
+    { "key": "freelancer_token", "value": "", "type": "string" },
+    { "key": "admin_token", "value": "", "type": "string" },
+    { "key": "gig_id", "value": "", "type": "string" },
+    { "key": "booking_id", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register – Client",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const ts = Date.now();",
+                  "const email = `testclient_${ts}@example.com`;",
+                  "pm.collectionVariables.set('client_email', email);"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Response has token', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('token');",
+                  "  pm.collectionVariables.set('client_token', body.token);",
+                  "});",
+                  "pm.test('User role is client', () => {",
+                  "  pm.expect(pm.response.json().user.role).to.equal('client');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/register",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test Client\",\n  \"email\": \"{{client_email}}\",\n  \"password\": \"password123\",\n  \"role\": \"client\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Register – Freelancer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Response has token', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('token');",
+                  "  pm.collectionVariables.set('freelancer_token', body.token);",
+                  "});",
+                  "pm.test('User role is freelancer', () => {",
+                  "  pm.expect(pm.response.json().user.role).to.equal('freelancer');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/register",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test Freelancer\",\n  \"email\": \"testfreelancer_{{$timestamp}}@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"freelancer\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login – Client",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const email = pm.collectionVariables.get('client_email');",
+                  "if (!email) { throw new Error('client_email is not set. Run Register – Client first.'); }"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns token', () => {",
+                  "  pm.expect(pm.response.json()).to.have.property('token');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{client_email}}\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login – Invalid Credentials",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 401', () => pm.response.to.have.status(401));",
+                  "pm.test('Error message present', () => {",
+                  "  pm.expect(pm.response.json()).to.have.property('message');",
+                  "});",
+                  "pm.test('No token in error response', () => {",
+                  "  pm.expect(pm.response.json()).to.not.have.property('token');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"wrong@example.com\",\n  \"password\": \"wrongpassword\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Current User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns user object', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('id');",
+                  "  pm.expect(body).to.have.property('email');",
+                  "  pm.expect(body).to.not.have.property('password');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/auth/user",
+            "header": [{ "key": "Authorization", "value": "Bearer {{client_token}}" }]
+          }
+        },
+        {
+          "name": "Protected Route – No Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 401', () => pm.response.to.have.status(401));",
+                  "pm.test('Unauthorized message', () => {",
+                  "  pm.expect(pm.response.json().message).to.include('Not authorized');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/auth/user",
+            "header": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gigs",
+      "item": [
+        {
+          "name": "Create Gig – Freelancer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Gig has ID', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('_id');",
+                  "  pm.collectionVariables.set('gig_id', body._id);",
+                  "});",
+                  "pm.test('Gig category is valid', () => {",
+                  "  pm.expect(pm.response.json().category).to.equal('Web Development');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/gigs",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{freelancer_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"I will build a professional React web application\",\n  \"description\": \"I offer full-stack React development with Node.js backend. Clean code, responsive design, and on-time delivery guaranteed. Includes testing and documentation.\",\n  \"category\": \"Web Development\",\n  \"price\": 2500,\n  \"deliveryDays\": 7\n}"
+            }
+          }
+        },
+        {
+          "name": "Create Gig – Client Forbidden",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 403 (Forbidden)', () => pm.response.to.have.status(403));",
+                  "pm.test('Access denied message', () => {",
+                  "  pm.expect(pm.response.json()).to.have.property('message');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/gigs",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{client_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"I will do something\",\n  \"description\": \"This is a test description that is long enough\",\n  \"category\": \"Other\",\n  \"price\": 100,\n  \"deliveryDays\": 3\n}"
+            }
+          }
+        },
+        {
+          "name": "Create Gig – Validation Fails (Short Title)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Validation error message', () => {",
+                  "  pm.expect(pm.response.json()).to.have.property('message');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/gigs",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{freelancer_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Hi\",\n  \"description\": \"Short\",\n  \"category\": \"Other\",\n  \"price\": 100,\n  \"deliveryDays\": 3\n}"
+            }
+          }
+        },
+        {
+          "name": "Browse All Gigs",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns array', () => {",
+                  "  pm.expect(pm.response.json()).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/gigs",
+            "header": [{ "key": "Authorization", "value": "Bearer {{client_token}}" }]
+          }
+        },
+        {
+          "name": "Browse Gigs by Category",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('All gigs match category', () => {",
+                  "  const gigs = pm.response.json();",
+                  "  gigs.forEach(g => pm.expect(g.category).to.equal('Web Development'));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/gigs?category=Web Development",
+              "host": ["{{base_url}}"],
+              "path": ["gigs"],
+              "query": [{ "key": "category", "value": "Web Development" }]
+            },
+            "header": [{ "key": "Authorization", "value": "Bearer {{client_token}}" }]
+          }
+        },
+        {
+          "name": "Get Gig by ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Gig ID matches', () => {",
+                  "  pm.expect(pm.response.json()._id).to.equal(pm.collectionVariables.get('gig_id'));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/gigs/{{gig_id}}",
+            "header": [{ "key": "Authorization", "value": "Bearer {{client_token}}" }]
+          }
+        },
+        {
+          "name": "Get My Gigs – Freelancer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns array', () => {",
+                  "  pm.expect(pm.response.json()).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/gigs/my",
+            "header": [{ "key": "Authorization", "value": "Bearer {{freelancer_token}}" }]
+          }
+        },
+        {
+          "name": "Update Gig – Owner",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Price updated', () => {",
+                  "  pm.expect(pm.response.json().price).to.equal(3000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/gigs/{{gig_id}}",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{freelancer_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 3000,\n  \"deliveryDays\": 10\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Gig – Unauthorised (Client)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 403', () => pm.response.to.have.status(403));",
+                  "pm.test('Access denied message', () => {",
+                  "  pm.expect(pm.response.json()).to.have.property('message');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/gigs/{{gig_id}}",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{client_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"price\": 50 }"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bookings",
+      "item": [
+        {
+          "name": "Create Booking – Client",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Booking confirmed', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.message).to.include('confirmed');",
+                  "  pm.expect(body.booking.status).to.equal('confirmed');",
+                  "  pm.collectionVariables.set('booking_id', body.booking._id);",
+                  "});",
+                  "pm.test('Amount matches gig price', () => {",
+                  "  pm.expect(pm.response.json().booking.amount).to.be.a('number');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/bookings",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{client_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"gigId\": \"{{gig_id}}\",\n  \"notes\": \"Please ensure mobile-responsive design\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Create Booking – Freelancer Forbidden",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 403 (Forbidden)', () => pm.response.to.have.status(403));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/bookings",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{freelancer_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"gigId\": \"{{gig_id}}\" }"
+            }
+          }
+        },
+        {
+          "name": "Get My Bookings – Client",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns array', () => {",
+                  "  pm.expect(pm.response.json()).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/bookings/my",
+            "header": [{ "key": "Authorization", "value": "Bearer {{client_token}}" }]
+          }
+        },
+        {
+          "name": "Get My Bookings – Freelancer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns array', () => {",
+                  "  pm.expect(pm.response.json()).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/bookings/my",
+            "header": [{ "key": "Authorization", "value": "Bearer {{freelancer_token}}" }]
+          }
+        },
+        {
+          "name": "Get Single Booking",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Booking has all required fields', () => {",
+                  "  const b = pm.response.json();",
+                  "  pm.expect(b).to.have.property('gig');",
+                  "  pm.expect(b).to.have.property('client');",
+                  "  pm.expect(b).to.have.property('freelancer');",
+                  "  pm.expect(b).to.have.property('amount');",
+                  "  pm.expect(b).to.have.property('status');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/bookings/{{booking_id}}",
+            "header": [{ "key": "Authorization", "value": "Bearer {{client_token}}" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transactions",
+      "item": [
+        {
+          "name": "Get My Transactions – Freelancer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Response has transactions and summary', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('transactions');",
+                  "  pm.expect(body).to.have.property('summary');",
+                  "});",
+                  "pm.test('Summary has tax and income fields', () => {",
+                  "  const s = pm.response.json().summary;",
+                  "  pm.expect(s).to.have.property('totalIncome');",
+                  "  pm.expect(s).to.have.property('totalEstimatedTax');",
+                  "  pm.expect(s).to.have.property('totalNetIncome');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/transactions/my",
+            "header": [{ "key": "Authorization", "value": "Bearer {{freelancer_token}}" }]
+          }
+        },
+        {
+          "name": "Get Transactions – Client Forbidden",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 403', () => pm.response.to.have.status(403));",
+                  "pm.test('Access denied', () => {",
+                  "  pm.expect(pm.response.json()).to.have.property('message');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/transactions/my",
+            "header": [{ "key": "Authorization", "value": "Bearer {{client_token}}" }]
+          }
+        },
+        {
+          "name": "Get Income Summary – Freelancer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Response has year and totals', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body).to.have.property('monthly');",
+                  "  pm.expect(body).to.have.property('totals');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/transactions/summary?year=2026",
+              "host": ["{{base_url}}"],
+              "path": ["transactions", "summary"],
+              "query": [{ "key": "year", "value": "2026" }]
+            },
+            "header": [{ "key": "Authorization", "value": "Bearer {{freelancer_token}}" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Security Tests",
+      "item": [
+        {
+          "name": "NoSQL Injection Attempt – Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400 or 401 (sanitised input)', () => {",
+                  "  pm.expect([400, 401]).to.include(pm.response.code);",
+                  "});",
+                  "pm.test('Does not expose DB error', () => {",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(JSON.stringify(body)).to.not.include('MongoError');",
+                  "  pm.expect(JSON.stringify(body)).to.not.include('$where');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": { \"$gt\": \"\" },\n  \"password\": { \"$gt\": \"\" }\n}"
+            }
+          }
+        },
+        {
+          "name": "Invalid Gig ID – 400 Response",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 400 for invalid ID format', () => {",
+                  "  pm.expect(pm.response.code).to.equal(400);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/gigs/notavalidid",
+            "header": [{ "key": "Authorization", "value": "Bearer {{client_token}}" }]
+          }
+        },
+        {
+          "name": "Delete Gig – Owner Only",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200 – Owner can delete', () => {",
+                  "  pm.expect(pm.response.to.have.status(200));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/gigs/{{gig_id}}",
+            "header": [{ "key": "Authorization", "value": "Bearer {{freelancer_token}}" }]
+          }
+        }
+      ]
+    }
+  ]
+}

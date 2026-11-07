@@ -1,0 +1,11 @@
+node_modules
+npm-debug.log
+.git
+.gitignore
+.env
+build
+dist
+test-reports
+logs/*.log
+certs/*.key
+certs/*.cert

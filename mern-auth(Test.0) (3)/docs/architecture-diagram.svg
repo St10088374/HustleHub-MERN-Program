@@ -1,0 +1,210 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="100%" height="100%" style="background:#0f172a; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5" />
+      <stop offset="100%" stop-color="#06b6d4" />
+    </linearGradient>
+    <linearGradient id="clientGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="securityGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#312e81" />
+      <stop offset="100%" stop-color="#1e1b4b" />
+    </linearGradient>
+    <linearGradient id="appGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="100%" stop-color="#022c22" />
+    </linearGradient>
+    <linearGradient id="dbGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#831843" />
+      <stop offset="100%" stop-color="#500724" />
+    </linearGradient>
+    <linearGradient id="devSecOpsGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#111827" />
+    </linearGradient>
+
+    <!-- Filter for subtle drop shadow -->
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000000" flood-opacity="0.4" />
+    </filter>
+  </defs>
+
+  <!-- Title & Banner -->
+  <rect x="40" y="30" width="1120" height="70" rx="12" fill="url(#headerGrad)" filter="url(#shadow)" />
+  <text x="70" y="73" fill="#ffffff" font-size="26" font-weight="800" letter-spacing="0.5">HustleHub+ System Architecture &amp; MERN Security Boundaries</text>
+  <text x="890" y="72" fill="#e0e7ff" font-size="14" font-weight="600">POE Full-Stack &amp; DevSecOps</text>
+
+  <!-- ================= TIER 1: CLIENT TIER ================= -->
+  <rect x="40" y="125" width="340" height="490" rx="12" fill="url(#clientGrad)" stroke="#38bdf8" stroke-width="2" filter="url(#shadow)" />
+  <rect x="40" y="125" width="340" height="42" rx="12" fill="#0284c7" />
+  <rect x="40" y="155" width="340" height="12" fill="#0284c7" />
+  <text x="60" y="152" fill="#ffffff" font-size="16" font-weight="700">1. Client Tier (React 18 + Vite SPA)</text>
+
+  <!-- Client components -->
+  <g transform="translate(60, 185)">
+    <!-- Sub-box: Views -->
+    <rect x="0" y="0" width="300" height="110" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1" />
+    <text x="15" y="24" fill="#38bdf8" font-size="13" font-weight="700">Role-Based Portals &amp; Views</text>
+    <text x="15" y="46" fill="#cbd5e1" font-size="12">• Client: GigBrowse, GigDetail, MyBookings</text>
+    <text x="15" y="66" fill="#cbd5e1" font-size="12">• Freelancer: MyGigs, Income &amp; Tax (27%), Orders</text>
+    <text x="15" y="86" fill="#cbd5e1" font-size="12">• Admin: Platform Metrics, Audit Governance</text>
+
+    <!-- Sub-box: Security Context -->
+    <rect x="0" y="125" width="300" height="100" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1" />
+    <text x="15" y="149" fill="#38bdf8" font-size="13" font-weight="700">Client-Side Security Guards</text>
+    <text x="15" y="171" fill="#cbd5e1" font-size="12">• ProtectedRoute Guard (RBAC Authorization)</text>
+    <text x="15" y="191" fill="#cbd5e1" font-size="12">• Axios Interceptor: Authorization: Bearer &lt;JWT&gt;</text>
+    <text x="15" y="211" fill="#cbd5e1" font-size="12">• HTML Escaping / Controlled React Inputs</text>
+
+    <!-- Sub-box: Visual Analytics -->
+    <rect x="0" y="240" width="300" height="75" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1" />
+    <text x="15" y="264" fill="#38bdf8" font-size="13" font-weight="700">Financial Visualizations</text>
+    <text x="15" y="284" fill="#cbd5e1" font-size="12">• 73% Net Take-Home vs 27% Tax Ratio Bar</text>
+    <text x="15" y="302" fill="#cbd5e1" font-size="12">• Monthly Trend Chart (Gross vs Net vs Tax)</text>
+  </g>
+
+  <!-- ================= TIER 2: API SECURITY PERIMETER ================= -->
+  <rect x="420" y="125" width="350" height="490" rx="12" fill="url(#securityGrad)" stroke="#818cf8" stroke-width="2" filter="url(#shadow)" />
+  <rect x="420" y="125" width="350" height="42" rx="12" fill="#4f46e5" />
+  <rect x="420" y="155" width="350" height="12" fill="#4f46e5" />
+  <text x="440" y="152" fill="#ffffff" font-size="16" font-weight="700">2. API Security Gateway (Express.js)</text>
+
+  <!-- Security middleware stack -->
+  <g transform="translate(440, 185)">
+    <!-- TLS / HTTPS -->
+    <rect x="0" y="0" width="310" height="46" rx="6" fill="#1e1b4b" stroke="#6366f1" stroke-width="1" />
+    <text x="12" y="20" fill="#a5b4fc" font-size="12" font-weight="700">TLS 1.3 / Native HTTPS</text>
+    <text x="12" y="37" fill="#cbd5e1" font-size="11">Self-Signed 365-day SSL Certs (generate-certs.js)</text>
+
+    <!-- Helmet & CSP -->
+    <rect x="0" y="54" width="310" height="52" rx="6" fill="#1e1b4b" stroke="#6366f1" stroke-width="1" />
+    <text x="12" y="73" fill="#a5b4fc" font-size="12" font-weight="700">Helmet &amp; Content Security Policy (CSP)</text>
+    <text x="12" y="90" fill="#cbd5e1" font-size="11">X-Frame-Options: DENY · nosniff · Strict scripts</text>
+
+    <!-- Rate Limiting -->
+    <rect x="0" y="114" width="310" height="58" rx="6" fill="#1e1b4b" stroke="#6366f1" stroke-width="1" />
+    <text x="12" y="133" fill="#a5b4fc" font-size="12" font-weight="700">Multi-Tier Rate Limiters (Anti-DDoS / Brute Force)</text>
+    <text x="12" y="150" fill="#cbd5e1" font-size="11">• Global: 200/15m · Auth: 20/15m · Booking: 10/15m</text>
+    <text x="12" y="164" fill="#cbd5e1" font-size="11">• 10kb Max JSON Payload Limits</text>
+
+    <!-- Sanitization -->
+    <rect x="0" y="180" width="310" height="54" rx="6" fill="#1e1b4b" stroke="#6366f1" stroke-width="1" />
+    <text x="12" y="199" fill="#a5b4fc" font-size="12" font-weight="700">Injection &amp; Scripting Sanitization</text>
+    <text x="12" y="216" fill="#cbd5e1" font-size="11">• mongoSanitize (strips '$' and '.') · xss-clean</text>
+    <text x="12" y="228" fill="#cbd5e1" font-size="11">• express-validator: strict type/length/regex checks</text>
+
+    <!-- RBAC & JWT -->
+    <rect x="0" y="242" width="310" height="54" rx="6" fill="#1e1b4b" stroke="#6366f1" stroke-width="1" />
+    <text x="12" y="261" fill="#a5b4fc" font-size="12" font-weight="700">JWT Token Validation &amp; RBAC Guard</text>
+    <text x="12" y="278" fill="#cbd5e1" font-size="11">• protect middleware verifies Bearer signature</text>
+    <text x="12" y="290" fill="#cbd5e1" font-size="11">• authorize('client' | 'freelancer' | 'admin')</text>
+
+    <!-- Audit Logger -->
+    <rect x="0" y="304" width="310" height="48" rx="6" fill="#1e1b4b" stroke="#6366f1" stroke-width="1" />
+    <text x="12" y="323" fill="#a5b4fc" font-size="12" font-weight="700">Structured Security Audit Logger</text>
+    <text x="12" y="340" fill="#cbd5e1" font-size="11">JSON events -> logs/security-events.log</text>
+  </g>
+
+  <!-- ================= TIER 3: BACKEND & DATABASE TIER ================= -->
+  <rect x="805" y="125" width="355" height="490" rx="12" fill="url(#appGrad)" stroke="#34d399" stroke-width="2" filter="url(#shadow)" />
+  <rect x="805" y="125" width="355" height="42" rx="12" fill="#059669" />
+  <rect x="805" y="155" width="355" height="12" fill="#059669" />
+  <text x="825" y="152" fill="#ffffff" font-size="16" font-weight="700">3. Business Services &amp; MongoDB</text>
+
+  <g transform="translate(825, 185)">
+    <!-- Business Controllers -->
+    <rect x="0" y="0" width="315" height="120" rx="8" fill="#064e3b" stroke="#059669" stroke-width="1" />
+    <text x="14" y="24" fill="#6ee7b7" font-size="13" font-weight="700">Controllers &amp; Business Rules</text>
+    <text x="14" y="46" fill="#ecfdf5" font-size="12">• Auth: bcrypt cost 12, admin self-reg block</text>
+    <text x="14" y="66" fill="#ecfdf5" font-size="12">• Gigs: Owner isolation (req.user._id matching)</text>
+    <text x="14" y="86" fill="#ecfdf5" font-size="12">• Bookings: Atomic generation &amp; compensation</text>
+    <text x="14" y="106" fill="#ecfdf5" font-size="12">• Tax Engine: 27% provisional liability computation</text>
+
+    <!-- Database Schema Container -->
+    <rect x="0" y="135" width="315" height="175" rx="8" fill="url(#dbGrad)" stroke="#f43f5e" stroke-width="1.5" />
+    <text x="14" y="158" fill="#fda4af" font-size="13" font-weight="700">MongoDB Database (MERN Storage Tier)</text>
+    
+    <rect x="12" y="170" width="138" height="58" rx="6" fill="#500724" stroke="#e11d48" stroke-width="1" />
+    <text x="20" y="188" fill="#ffe4e6" font-size="12" font-weight="700">Users Collection</text>
+    <text x="20" y="204" fill="#cbd5e1" font-size="10">name, email, role,</text>
+    <text x="20" y="218" fill="#f43f5e" font-size="10">password (bcrypt salt 12)</text>
+
+    <rect x="162" y="170" width="142" height="58" rx="6" fill="#500724" stroke="#e11d48" stroke-width="1" />
+    <text x="170" y="188" fill="#ffe4e6" font-size="12" font-weight="700">Gigs Collection</text>
+    <text x="170" y="204" fill="#cbd5e1" font-size="10">title, price, category,</text>
+    <text x="170" y="218" fill="#cbd5e1" font-size="10">freelancer (ref User)</text>
+
+    <rect x="12" y="238" width="138" height="58" rx="6" fill="#500724" stroke="#e11d48" stroke-width="1" />
+    <text x="20" y="256" fill="#ffe4e6" font-size="12" font-weight="700">Bookings Collection</text>
+    <text x="20" y="272" fill="#cbd5e1" font-size="10">client, freelancer, gig,</text>
+    <text x="20" y="286" fill="#cbd5e1" font-size="10">amount, status</text>
+
+    <rect x="162" y="238" width="142" height="58" rx="6" fill="#500724" stroke="#e11d48" stroke-width="1" />
+    <text x="170" y="256" fill="#ffe4e6" font-size="12" font-weight="700">Transactions Collection</text>
+    <text x="170" y="272" fill="#cbd5e1" font-size="10">amount, netAmount,</text>
+    <text x="170" y="286" fill="#f43f5e" font-size="10">estimatedTax (27%)</text>
+  </g>
+
+  <!-- ================= TIER 4: DEVSECOPS & CI/CD PIPELINE ================= -->
+  <rect x="40" y="635" width="1120" height="235" rx="12" fill="url(#devSecOpsGrad)" stroke="#64748b" stroke-width="2" filter="url(#shadow)" />
+  <rect x="40" y="635" width="1120" height="38" rx="12" fill="#334155" />
+  <rect x="40" y="660" width="1120" height="13" fill="#334155" />
+  <text x="60" y="660" fill="#ffffff" font-size="15" font-weight="700">4. DevSecOps CI/CD Pipeline &amp; Container Orchestration (GitHub Actions &amp; Docker)</text>
+
+  <!-- 4 Stage Pipeline Blocks -->
+  <g transform="translate(60, 690)">
+    <!-- Stage 1 -->
+    <rect x="0" y="0" width="245" height="155" rx="8" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5" />
+    <text x="14" y="24" fill="#38bdf8" font-size="13" font-weight="700">1. Security &amp; SAST Audit</text>
+    <text x="14" y="46" fill="#cbd5e1" font-size="11">• Trivy Static Vulnerability Scan</text>
+    <text x="14" y="64" fill="#cbd5e1" font-size="11">• Backend npm audit (SCA)</text>
+    <text x="14" y="82" fill="#cbd5e1" font-size="11">• Frontend npm audit (SCA)</text>
+    <text x="14" y="100" fill="#cbd5e1" font-size="11">• Pipeline blocks on Critical/High</text>
+    <rect x="14" y="118" width="85" height="22" rx="4" fill="#0369a1" />
+    <text x="24" y="133" fill="#ffffff" font-size="10" font-weight="700">SECURITY GATE</text>
+
+    <!-- Stage 2 -->
+    <rect x="270" y="0" width="245" height="155" rx="8" fill="#0f172a" stroke="#818cf8" stroke-width="1.5" />
+    <text x="284" y="24" fill="#818cf8" font-size="13" font-weight="700">2. Backend Unit &amp; API Tests</text>
+    <text x="284" y="46" fill="#cbd5e1" font-size="11">• Node.js Native Runner (12/12)</text>
+    <text x="284" y="64" fill="#cbd5e1" font-size="11">• Supertest Security Specs</text>
+    <text x="284" y="82" fill="#cbd5e1" font-size="11">• Automated Newman Collection</text>
+    <text x="284" y="100" fill="#cbd5e1" font-size="11">• Dynamic MongoDB Service</text>
+    <rect x="284" y="118" width="75" height="22" rx="4" fill="#4338ca" />
+    <text x="296" y="133" fill="#ffffff" font-size="10" font-weight="700">12/12 PASS</text>
+
+    <!-- Stage 3 -->
+    <rect x="540" y="0" width="245" height="155" rx="8" fill="#0f172a" stroke="#34d399" stroke-width="1.5" />
+    <text x="554" y="24" fill="#34d399" font-size="13" font-weight="700">3. Frontend Unit &amp; Build</text>
+    <text x="554" y="46" fill="#cbd5e1" font-size="11">• Vitest Non-Watch Runner (34/34)</text>
+    <text x="554" y="64" fill="#cbd5e1" font-size="11">• React Testing Library &amp; Mocks</text>
+    <text x="554" y="82" fill="#cbd5e1" font-size="11">• Vite Production Build Verification</text>
+    <text x="554" y="100" fill="#cbd5e1" font-size="11">• Zero Broken Asset Bundling</text>
+    <rect x="554" y="118" width="75" height="22" rx="4" fill="#047857" />
+    <text x="566" y="133" fill="#ffffff" font-size="10" font-weight="700">34/34 PASS</text>
+
+    <!-- Stage 4 -->
+    <rect x="810" y="0" width="260" height="155" rx="8" fill="#0f172a" stroke="#f43f5e" stroke-width="1.5" />
+    <text x="824" y="24" fill="#f43f5e" font-size="13" font-weight="700">4. Docker Container Stack</text>
+    <text x="824" y="46" fill="#cbd5e1" font-size="11">• hustlehub_mongodb (Port 27017)</text>
+    <text x="824" y="64" fill="#cbd5e1" font-size="11">• hustlehub_api (Port 5000, Non-Root)</text>
+    <text x="824" y="82" fill="#cbd5e1" font-size="11">• hustlehub_client (Nginx Alpine :3000)</text>
+    <text x="824" y="100" fill="#cbd5e1" font-size="11">• docker-compose.yml Orchestration</text>
+    <rect x="824" y="118" width="95" height="22" rx="4" fill="#be123c" />
+    <text x="834" y="133" fill="#ffffff" font-size="10" font-weight="700">CONTAINERIZED</text>
+  </g>
+
+  <!-- Communication arrows between tiers -->
+  <!-- Client to API -->
+  <path d="M 380 340 L 420 340" stroke="#38bdf8" stroke-width="3" stroke-dasharray="6,4" />
+  <polygon points="418,335 428,340 418,345" fill="#38bdf8" />
+  <text x="382" y="330" fill="#94a3b8" font-size="10" font-weight="700">HTTPS</text>
+
+  <!-- API to Backend/DB -->
+  <path d="M 770 340 L 805 340" stroke="#34d399" stroke-width="3" stroke-dasharray="6,4" />
+  <polygon points="803,335 813,340 803,345" fill="#34d399" />
+  <text x="774" y="330" fill="#94a3b8" font-size="10" font-weight="700">BSON</text>
+</svg>
